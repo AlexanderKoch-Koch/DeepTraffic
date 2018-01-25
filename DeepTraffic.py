@@ -7,14 +7,15 @@ from multiprocessing import Process, Queue
 pool = ThreadPool(processes=1)
 
 # evolution parameters
-generations = 1
-num_agents = 1
+generations = 20
+num_agents = 80
+sigma_divisor = 5
 
 # start parameters for first gen agents
 params = [1,        # lanesSide
           7,        # patchesAhead
           0,        # patchesBehind
-          5000,     # trainIterations
+          10000,     # trainIterations
           10,       # l1_num_neurons
           0,        # l2_num_neurons
           0,        # l3_num_neurons
@@ -35,19 +36,19 @@ for i in range(generations):
     agents = np.zeros((num_agents, len(params) + 1), dtype=np.float32)  # gamma, epsilon, learning_rate, neurons, score
     for a in range(num_agents):
         # for each agent a in generation i
-        agents[a][0] = int(max(1, random.gauss(mu=params[0], sigma=0.1))) # lanesSide
-        agents[a][1] = int(max(1, random.gauss(mu=params[1], sigma=0.5)))  # patchesAhead
-        agents[a][2] = int(max(0, random.gauss(mu=params[2], sigma=0.4)))  # patchesBehind
-        agents[a][3] = int(max(1, random.gauss(mu=params[3], sigma=100)))    # trainIterations
-        agents[a][4] = int(max(1, random.gauss(mu=params[4], sigma=1.5)))  # l1_num_neurons
-        agents[a][5] = int(max(0, random.gauss(mu=params[5], sigma=1)))  # l2_num_neurons
-        agents[a][6] = int(max(0, random.gauss(mu=params[6], sigma=0.5)))  # l3_num_neurons
-        agents[a][7] = random.gauss(mu=params[7], sigma=0.0001)  # learning_rate
-        agents[a][8] = random.gauss(mu=params[8], sigma=0)  # momentum
-        agents[a][9] = int(random.gauss(mu=params[9], sigma=2))  # batch_size
-        agents[a][10] = random.gauss(mu=params[10], sigma=0.001)  # l2_decay
-        agents[a][11] = random.gauss(mu=params[11], sigma=0.01)  # gamma
-        agents[a][12] = int(max(1, random.gauss(mu=params[12], sigma=0.5)))  # temporal window
+        agents[a][0] = max(1, round(random.gauss(mu=params[0], sigma=params[0]/sigma_divisor))) # lanesSide
+        agents[a][1] = max(1, round(random.gauss(mu=params[1], sigma=params[1]/sigma_divisor)))   # patchesAhead
+        agents[a][2] = max(0, round(random.gauss(mu=params[2], sigma=params[2]/sigma_divisor)))   # patchesBehind
+        agents[a][3] = max(1, round(random.gauss(mu=params[3], sigma=0)))   # trainIterations
+        agents[a][4] = max(1, round(random.gauss(mu=params[4], sigma=params[4]/sigma_divisor)))     # l1_num_neurons
+        agents[a][5] = max(0, round(random.gauss(mu=params[5], sigma=params[5]/sigma_divisor)))   # l2_num_neurons
+        agents[a][6] = max(0, round(random.gauss(mu=params[6], sigma=params[6]/sigma_divisor)))   # l3_num_neurons
+        agents[a][7] = random.gauss(mu=params[7], sigma=params[7]/sigma_divisor)             # learning_rate
+        agents[a][8] = random.gauss(mu=params[8], sigma=params[8]/sigma_divisor)                  # momentum
+        agents[a][9] = round(random.gauss(mu=params[9], sigma=params[9]/sigma_divisor))             # batch_size
+        agents[a][10] = random.gauss(mu=params[10], sigma=params[10]/sigma_divisor)            # l2_decay
+        agents[a][11] = random.gauss(mu=params[11], sigma=params[11]/sigma_divisor)             # gamma
+        agents[a][12] = max(1, round(random.gauss(mu=params[12], sigma=params[12]/sigma_divisor))) # temporal window
 
         agent = Agent(agents[a][0:len(agents[a] - 1)])
         queues.append(Queue())
@@ -67,6 +68,6 @@ for i in range(generations):
         params[parameter] = np.mean(agents[-2, parameter])
 
     # print values of ten best agents
-    #print(agents[-10:, :])
-    print(params)
+    print(agents[-1:, :])
+    print(agent.generate_code(agents[a][0:len(agents[a] - 1)]))
 

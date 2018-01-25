@@ -8,8 +8,12 @@ class Agent:
         self.params = params
 
     def run(self, queue):
-        x = shell.execute_js("javascript/train_webworker.js", arguments=self.generate_arguments())
-        print(x)
+        #print(self.generate_code(self.params))
+        js = shell.muterun_js("javascript/train_webworker.js", arguments=self.generate_arguments())
+        #print(x)
+        result = float(js.stdout[-6:])
+        #print(result)
+        queue.put(result)
 
     def generate_arguments(self):
         arguments = ""

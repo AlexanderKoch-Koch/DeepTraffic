@@ -5,17 +5,22 @@ var deepqlearn = require('convnetjs/build/deepqlearn');
 console.log(process.argv)
 
 //code
-lanesSide = 1;
-patchesAhead = 6;
-patchesBehind = 0;
-trainIterations = 10000;
+lanesSide = parseInt(process.argv[2]);
+console.log(lanesSide)
+patchesAhead = parseInt(process.argv[3]);
+console.log("patchesAhead" + patchesAhead)
+patchesBehind = parseInt(process.argv[4]);
+console.log("patchesBehind" + patchesBehind)
+trainIterations = parseInt(process.argv[5]);
+console.log("trainIterations" + trainIterations)
 
 // the number of other autonomous vehicles controlled by your network
 otherAgents = 0; // max of 9
 
 var num_inputs = (lanesSide * 2 + 1) * (patchesAhead + patchesBehind);
 var num_actions = 5;
-var temporal_window = 3;
+var temporal_window = parseInt(process.argv[14]);
+console.log("temporal_window" + temporal_window)
 var network_size = num_inputs * temporal_window + num_actions * temporal_window + num_inputs;
 
 var layer_defs = [];
@@ -27,26 +32,44 @@ var layer_defs = [];
 });
 layer_defs.push({
     type: 'fc',
-    num_neurons: 10,
+    num_neurons: parseInt(process.argv[6]),
     activation: 'relu'
 });
+if(process.argv[7] != 0){
+    layer_defs.push({
+        type: 'fc',
+        num_neurons: parseInt(process.argv[7]),
+        activation: 'relu'
+    });
+    if(process.argv[8] != 0){
+        layer_defs.push({
+            type: 'fc',
+            num_neurons: parseInt(process.argv[8]),
+            activation: 'relu'
+        });
+    }
+}
+console.log("layer_defs" + layer_defs)
+
 layer_defs.push({
     type: 'regression',
     num_neurons: num_actions
 });
 
 var tdtrainer_options = {
-    learning_rate: 0.001,
-    momentum: 0.0,
-    batch_size: 64,
-    l2_decay: 0.01
+    learning_rate: parseFloat(process.argv[9]),
+    momentum: parseFloat(process.argv[10]),
+    batch_size: parseInt(process.argv[11]),
+    l2_decay: parseFloat(process.argv[12])
 };
+console.log("vdtrainer_options" + tdtrainer_options)
 
 var opt = {};
 opt.temporal_window = temporal_window;
 opt.experience_size = 3000;
 opt.start_learn_threshold = 500;
-opt.gamma = 0.85;
+opt.gamma = parseFloat(process.argv[13]);
+console.log("gamma" + opt.gamma)
 opt.learning_steps_total = 10000;
 opt.learning_steps_burnin = 1000;
 opt.epsilon_min = 0.0;
@@ -103,7 +126,7 @@ function x(a) {
 function y() {
     var a = nOtherAgents
       , b = z;
-    console.log("cloning");
+    //console.log("cloning");
     for (var d = [], c = 0; c < a; c++)
         d.push(x(brain));
     for (c = 0; 20 > c; c++)
@@ -526,7 +549,7 @@ doEvalRun = function(a, b, d, c, f) {
     evalRun = Q = !0;
     f = [];
     for (var h = 0, g = 0; g < a; g++) {
-        console.log("run: " + (g + 1) + "/" + a);
+        //console.log("run: " + (g + 1) + "/" + a);
         reset();
         for (var O = 0, P = 0; P < b; P++) {
             0 == h % d && c();
@@ -541,7 +564,7 @@ doEvalRun = function(a, b, d, c, f) {
     Q = l;
     evalRun = headless = !1;
     f.sort();
-    console.log(f);
+    //console.log(f);
     for (c = b = 0; c < f.length; c++)
         b += f[c];
     console.log("avg: " + b / a + " median: " + f[a / 2]);
@@ -562,35 +585,18 @@ if (trainIterations > 0) {
     var numRuns = totalFrames / 100000 + 1;
     var percent = 0;
     doEvalRun(numRuns, totalFrames / numRuns, false, function () {
-        console.log(percent + "% done");
+        //console.log(percent + "% done");
 
         percent++;
     }, totalFrames / 100);
 }
 
-    /*eval(code);
-    importScripts("gameopt.js");
-
-    if (typeof brain != 'undefined') {
-        brain.learning = true;
-    }
-    if (trainIterations > 0) {
-        var totalFrames = 30  * trainIterations;
-        var numRuns = totalFrames / 100000 + 1;
-        var percent = 0;
-        doEvalRun(numRuns, totalFrames / numRuns, false, function () {
-            console.log(percent + "% done");
-            postMessage({
-                percent: percent
-            });
-            //if (percent > 0 && percent % 10 == 0) {
-            postMessage({
-                net: brain.value_net.toJSON()
-            });
-            //}
-            percent++;
-        }, totalFrames / 100);
-    }
-    if (typeof brain != 'undefined') {
-        brain.learning = false;
-    }*/
+brain.learning = false;
+var runs = 500;
+var frames = 2000;
+var percent = 0;
+var mph = doEvalRun(runs, frames, true, function () {
+    //console.log(percent + "% done");
+    percent++;
+}, runs * frames / 100);
+console.log("    " + mph)
