@@ -7,8 +7,8 @@ from multiprocessing import Process, Queue
 pool = ThreadPool(processes=1)
 
 # evolution parameters
-generations = 5
-num_agents = 16
+generations = 1
+num_agents = 1
 
 # start parameters for first gen agents
 params = [1,        # lanesSide
@@ -44,7 +44,7 @@ for i in range(generations):
         agents[a][6] = int(max(0, random.gauss(mu=params[6], sigma=0.5)))  # l3_num_neurons
         agents[a][7] = random.gauss(mu=params[7], sigma=0.0001)  # learning_rate
         agents[a][8] = random.gauss(mu=params[8], sigma=0)  # momentum
-        agents[a][9] = random.gauss(mu=params[9], sigma=2)  # batch_size
+        agents[a][9] = int(random.gauss(mu=params[9], sigma=2))  # batch_size
         agents[a][10] = random.gauss(mu=params[10], sigma=0.001)  # l2_decay
         agents[a][11] = random.gauss(mu=params[11], sigma=0.01)  # gamma
         agents[a][12] = int(max(1, random.gauss(mu=params[12], sigma=0.5)))  # temporal window

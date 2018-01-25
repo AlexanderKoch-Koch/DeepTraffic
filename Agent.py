@@ -1,9 +1,5 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
-import re
+from Naked.toolshed import shell
+import numpy as np
 
 
 class Agent:
@@ -12,60 +8,21 @@ class Agent:
         self.params = params
 
     def run(self, queue):
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument('--start-maximized')
-        options.add_argument('--start-fullscreen')
-        driver = webdriver.Chrome(options=options)
-        driver.get("https://selfdrivingcars.mit.edu/deeptraffic/")
+        x = shell.execute_js("javascript/train_webworker.js", arguments=self.generate_arguments())
+        print(x)
 
-        # change code
-        code = self.generate_code(self.params)
-        print(code)
-        driver.execute_script('editor.setValue("' + code + '")')
+    def generate_arguments(self):
+        arguments = ""
+        for i in range(len(self.params)):
+            if self.params[i] % 1 == 0:
+                arguments += str(int(self.params[i]))
+            else:
+                arguments += str(self.params[i])
+            arguments += " "
+        return arguments
 
-        # click apply code button
-        driver.find_element_by_xpath('//*[@id="main"]/div/div[3]/div[3]/button[1]').click()
-
-        # click train button
-        train_button = driver.find_element_by_id("trainButton")
-        train_button.click()
-        try:
-            element = WebDriverWait(driver, 10000).until(
-                EC.element_to_be_clickable((By.ID, "trainButton"))
-            )
-        except TimeoutException:
-            queue.put(0)
-            return
-        finally:
-            print("training finished")
-            # click OK button
-            driver.find_element_by_class_name("confirm").click()
-            #driver.execute_script("window.scrollBy(100,250)")
-            #driver.save_screenshot('training.png')
-
-
-        time.sleep(0.2)
-        eval_button = driver.find_element_by_xpath('//*[@id="evalButton"]')
-        eval_button.click()
-        try:
-            element = WebDriverWait(driver, 10000).until(
-                EC.element_to_be_clickable((By.XPATH, "/html/body/div[3]/div[7]/div/button"))
-            )
-        except TimeoutException:
-            queue.put(0)
-            return
-        finally:
-            time.sleep(0.1)
-            text_result = driver.find_element_by_xpath("/html/body/div[3]/p/b")
-            result_string = text_result.get_attribute('innerHTML')
-            speed_string = re.findall("\d+\.\d+", result_string)[0]
-            speed = float(speed_string)
-
-        queue.put(speed)
-
-    @staticmethod
-    def generate_code(params):
+    #@staticmethod
+    def generate_code(self, params):
         #print(int(params[0]))
         code =  'lanesSide = ' + str(int(params[0])) + ';\\n' + \
                 'patchesAhead = ' + str(int(params[1])) + ';\\n' + \
