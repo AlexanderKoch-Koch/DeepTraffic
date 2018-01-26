@@ -1,26 +1,20 @@
-console.log( "Hello World I am the train webworker" )
-var convnetjs = require("convnetjs")
 var deepqlearn = require('convnetjs/build/deepqlearn');
-
-console.log(process.argv)
 
 //code
 lanesSide = parseInt(process.argv[2]);
-console.log(lanesSide)
+//console.log(lanesSide)
 patchesAhead = parseInt(process.argv[3]);
-console.log("patchesAhead" + patchesAhead)
+//console.log("patchesAhead" + patchesAhead)
 patchesBehind = parseInt(process.argv[4]);
-console.log("patchesBehind" + patchesBehind)
+//console.log("patchesBehind" + patchesBehind)
 trainIterations = parseInt(process.argv[5]);
-console.log("trainIterations" + trainIterations)
-
-// the number of other autonomous vehicles controlled by your network
+//console.log("trainIterations" + trainIterations)
 otherAgents = 0; // max of 9
 
 var num_inputs = (lanesSide * 2 + 1) * (patchesAhead + patchesBehind);
 var num_actions = 5;
 var temporal_window = parseInt(process.argv[14]);
-console.log("temporal_window" + temporal_window)
+//console.log("temporal_window" + temporal_window)
 var network_size = num_inputs * temporal_window + num_actions * temporal_window + num_inputs;
 
 var layer_defs = [];
@@ -49,7 +43,7 @@ if(process.argv[7] != 0){
         });
     }
 }
-console.log("layer_defs" + layer_defs)
+//console.log("layer_defs" + layer_defs)
 
 layer_defs.push({
     type: 'regression',
@@ -62,14 +56,14 @@ var tdtrainer_options = {
     batch_size: parseInt(process.argv[11]),
     l2_decay: parseFloat(process.argv[12])
 };
-console.log("vdtrainer_options" + tdtrainer_options)
+//console.log("vdtrainer_options" + tdtrainer_options)
 
 var opt = {};
 opt.temporal_window = temporal_window;
 opt.experience_size = 3000;
 opt.start_learn_threshold = 500;
 opt.gamma = parseFloat(process.argv[13]);
-console.log("gamma" + opt.gamma)
+//console.log("gamma" + opt.gamma)
 opt.learning_steps_total = 10000;
 opt.learning_steps_burnin = 1000;
 opt.epsilon_min = 0.0;
@@ -80,13 +74,9 @@ opt.tdtrainer_options = tdtrainer_options;
 brain = new deepqlearn.Brain(num_inputs, num_actions, opt);
 
 learn = function (state, lastReward) {
-brain.backward(lastReward);
-var action = brain.forward(state);
-
-//draw_net();
-//draw_stats();
-
-return action;
+    brain.backward(lastReward);
+    var action = brain.forward(state);
+    return action;
 }
 ///////////////////////////////////////////////////////////////////////////////
 var ghostColor = "undefined" != typeof colorScheme && null != colorScheme ? colorScheme : "#FF0000"
@@ -135,13 +125,6 @@ function y() {
         b[c + 1].f = !0;
     b[0].f = !0;
     return d
-}
-function A(a) {
-    var b = "var tmpLearn = " + learn.toString();
-    b = b.replace(/brain.backward\(lastReward\);/g, "");
-    b = b.replace(/draw_net\(\);/g, "");
-    b = b.replace(/draw_stats\(\);/g, "");
-    return b.replace(/brain/g, "brains[" + (a - 1) + "]")
 }
 function Map(a, b, d) {
     this.data = [];
@@ -407,12 +390,6 @@ function R(a, b) {
     }
     b && (J = d)
 }
-//headless || (document.addEventListener("keyup", function(a) {
-//    R(a, !1)
-//}),
-//document.addEventListener("keydown", function(a) {
-//    R(a, !0)
-//}));
 setDrawingStyle = function(a) {
     m = k = e = !1;
     switch (a.value) {
@@ -429,66 +406,6 @@ setDrawingStyle = function(a) {
 ;
 var S = Array(100)
   , T = null;
-function U() {
-    var a = document.getElementById("canvas").getContext("2d");
-    a.globalCompositeOperation = "destination-over";
-    a.clearRect(-30, 0, 1E3, 1E3);
-    for (var b = document.getElementById("vehicle"), d = document.getElementById("whiteCarSmall"), c = 1; c < nOtherAgents + 1; c++)
-        a.drawImage(b, z[c].x, z[c].y, 15, 34);
-    for (c = nOtherAgents + 1; c < z.length; c++)
-        a.drawImage(d, z[c].x, z[c].y, 15, 34);
-    a.drawImage(b, z[0].x, z[0].y, 15, 34);
-    if (null !== T) {
-        for (b = S.length - 1; 0 <= b; b--) {
-            d = (b + T) % S.length;
-            if (void 0 === S[d])
-                break;
-            S[d].y += z[0].c;
-            d = S[d];
-            a.globalAlpha = Math.min(.1, Math.pow(b / S.length, 5));
-            0 == b % 1 && (a.beginPath(),
-            a.arc(d.x + 7.5, d.y + 20, 5, 0, 2 * Math.PI, !1),
-            a.fillStyle = ghostColor,
-            a.fill())
-        }
-        T = (T + 1) % S.length
-    } else
-        T = 0;
-    S[T] = {
-        x: z[0].x,
-        y: z[0].y
-    };
-    a.globalAlpha = 1;
-    a.fillStyle = "rgba(120,120,120,0.4)";
-    a.fillRect(140, 0, 2, 1E3);
-    a.fillRect(1, 0, 2, 1E3);
-    M += E;
-    M %= 20;
-    for (c = 1; 7 > c; c++)
-        for (b = 0; 36 > b; b++)
-            a.fillRect(20 * c, 20 * b + 2 + M - 10, 2, 8);
-    if (e)
-        for (c = 0; c < H.data.length; c++)
-            for (b = 0; b < H.data[c].length; b++)
-                d = H.get(c, b, 0),
-                a.fillStyle = 0 < d ? "rgba(250,120,0," + d / 100 + ")" : "rgba(0,120,250," + -d / 100 + ")",
-                a.fillRect(20 * c + 2, 10 * b + 2, 18, 8);
-    if (k)
-        for (c = 0; c < H.data.length; c++)
-            for (b = 0; b < H.data[c].length; b++)
-                d = I.get(c, b, 100),
-                0 == d ? (a.fillStyle = "rgba(250,120,0,0.5)",
-                a.fillRect(20 * c + 2, 10 * b + 2, 18, 8)) : 2 == d && (a.fillStyle = "rgba(250,0,0,0.5)",
-                a.fillRect(20 * c + 2, 10 * b + 2, 18, 8));
-    if (m)
-        for (c = -lanesSide; c <= lanesSide; c++)
-            for (b = -patchesAhead; b < patchesBehind; b++)
-                d = K.get(c + lanesSide, b + patchesAhead, 0),
-                a.fillStyle = 100 < d ? "rgba(120,250,120," + (d / 10 / 103 + .1) + ")" : 0 < d ? "rgba(250,120,0," + (d / 101 + .1) + ")" : "rgba(0,120,250," + (-d / 101 + .1) + ")",
-                a.fillRect(20 * Math.floor(C + c) + 2, 10 * Math.floor(52.5 + b) + 2, 18, 8);
-    a.save();
-    a.restore()
-}
 function V() {
     !w && void 0 !== brain.forward_passes && brain.forward_passes > brain.temporal_window && (brains = y(),
     w = !0);
@@ -549,10 +466,9 @@ doEvalRun = function(a, b, d, c, f) {
     evalRun = Q = !0;
     f = [];
     for (var h = 0, g = 0; g < a; g++) {
-        //console.log("run: " + (g + 1) + "/" + a);
         reset();
         for (var O = 0, P = 0; P < b; P++) {
-            0 == h % d && c();
+            0 == h % d;
             V();
             for (var B = 0; B < nOtherAgents + 1; B++)
                 O += Math.max(0, z[B].c * z[B].a) / (nOtherAgents + 1);
@@ -564,7 +480,6 @@ doEvalRun = function(a, b, d, c, f) {
     Q = l;
     evalRun = headless = !1;
     f.sort();
-    //console.log(f);
     for (c = b = 0; c < f.length; c++)
         b += f[c];
     console.log("avg: " + b / a + " median: " + f[a / 2]);
@@ -578,25 +493,17 @@ function W() {
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//var gameopt = require("./gameopt.js")
 brain.learning = true;
 if (trainIterations > 0) {
     var totalFrames = 30  * trainIterations;
     var numRuns = totalFrames / 100000 + 1;
     var percent = 0;
-    doEvalRun(numRuns, totalFrames / numRuns, false, function () {
-        //console.log(percent + "% done");
-
-        percent++;
-    }, totalFrames / 100);
+    doEvalRun(numRuns, totalFrames / numRuns, false, d=totalFrames / 100);
 }
 
 brain.learning = false;
-var runs = 500;
+var runs = 200;
 var frames = 2000;
 var percent = 0;
-var mph = doEvalRun(runs, frames, true, function () {
-    //console.log(percent + "% done");
-    percent++;
-}, runs * frames / 100);
+var mph = doEvalRun(runs, frames, true, d=runs * frames / 100);
 console.log("    " + mph)
