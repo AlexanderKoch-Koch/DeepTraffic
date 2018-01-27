@@ -1,11 +1,11 @@
 var deepqlearn = require('convnetjs/build/deepqlearn');
 
 //code
-lanesSide = parseInt(process.argv[2]);
+lanesSide = Math.round(parseFloat(process.argv[2]));
 //console.log(lanesSide)
-patchesAhead = parseInt(process.argv[3]);
+patchesAhead = Math.round(parseFloat(process.argv[3]));
 //console.log("patchesAhead" + patchesAhead)
-patchesBehind = parseInt(process.argv[4]);
+patchesBehind = Math.round(parseFloat(process.argv[4]));
 //console.log("patchesBehind" + patchesBehind)
 trainIterations = 10000;
 //console.log("trainIterations" + trainIterations)
@@ -13,7 +13,7 @@ otherAgents = 0; // max of 9
 
 var num_inputs = (lanesSide * 2 + 1) * (patchesAhead + patchesBehind);
 var num_actions = 5;
-var temporal_window = parseInt(process.argv[14]);
+var temporal_window = Math.round(parseFloat(process.argv[14]));
 //console.log("temporal_window" + temporal_window)
 var network_size = num_inputs * temporal_window + num_actions * temporal_window + num_inputs;
 
@@ -26,19 +26,19 @@ var layer_defs = [];
 });
 layer_defs.push({
     type: 'fc',
-    num_neurons: parseInt(process.argv[6]),
+    num_neurons: Math.round(parseFloat(process.argv[6])),
     activation: 'relu'
 });
 if(process.argv[7] != 0){
     layer_defs.push({
         type: 'fc',
-        num_neurons: parseInt(process.argv[7]),
+        num_neurons: Math.round(parseFloat(process.argv[7])),
         activation: 'relu'
     });
     if(process.argv[8] != 0){
         layer_defs.push({
             type: 'fc',
-            num_neurons: parseInt(process.argv[8]),
+            num_neurons: Math.round(parseFloat(process.argv[8])),
             activation: 'relu'
         });
     }
@@ -53,14 +53,14 @@ layer_defs.push({
 var tdtrainer_options = {
     learning_rate: parseFloat(process.argv[9]),
     momentum: parseFloat(process.argv[10]),
-    batch_size: parseInt(process.argv[11]),
+    batch_size: Math.round(parseFloat(process.argv[11])),
     l2_decay: parseFloat(process.argv[12])
 };
 //console.log("vdtrainer_options" + tdtrainer_options)
 
 var opt = {};
 opt.temporal_window = temporal_window;
-opt.experience_size = parseInt(process.argv[5]);
+opt.experience_size = Math.round(parseFloat(process.argv[5]));
 opt.start_learn_threshold = 500;
 opt.gamma = parseFloat(process.argv[13]);
 //console.log("gamma" + opt.gamma)
