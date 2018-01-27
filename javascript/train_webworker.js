@@ -7,7 +7,7 @@ patchesAhead = parseInt(process.argv[3]);
 //console.log("patchesAhead" + patchesAhead)
 patchesBehind = parseInt(process.argv[4]);
 //console.log("patchesBehind" + patchesBehind)
-trainIterations = parseInt(process.argv[5]);
+trainIterations = 10000;
 //console.log("trainIterations" + trainIterations)
 otherAgents = 0; // max of 9
 
@@ -60,7 +60,7 @@ var tdtrainer_options = {
 
 var opt = {};
 opt.temporal_window = temporal_window;
-opt.experience_size = 3000;
+opt.experience_size = parseInt(process.argv[5]);
 opt.start_learn_threshold = 500;
 opt.gamma = parseFloat(process.argv[13]);
 //console.log("gamma" + opt.gamma)
