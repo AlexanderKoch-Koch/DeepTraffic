@@ -31,7 +31,7 @@ class Agent:
         code =  'lanesSide = ' + str(int(params[0])) + ';\\n' + \
                 'patchesAhead = ' + str(int(params[1])) + ';\\n' + \
                 'patchesBehind = ' + str(int(params[2])) + ';\\n' + \
-                'trainIterations = ' + str(int(params[3])) + ';\\n' + \
+                'trainIterations = 10000;\\n' + \
                 'otherAgents = 0;\\n' + \
                 'var num_inputs = (lanesSide * 2 + 1) * (patchesAhead + patchesBehind);\\n' + \
                 'var num_actions = 5;\\n' + \

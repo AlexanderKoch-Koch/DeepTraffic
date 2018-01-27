@@ -8,14 +8,15 @@ pool = ThreadPool(processes=1)
 
 # evolution parameters
 generations = 20
-num_agents = 4
-sigma_divisor = 5
+num_agents = 40
+sigma_divisor = 6
+mutate_percent = 1
 
 # start parameters for first gen agents
 params_start = [1,        # lanesSide
           7,        # patchesAhead
           0,        # patchesBehind
-          #10000,     # trainIterations
+          3000,     # experience size
           10,       # l1_num_neurons
           0,        # l2_num_neurons
           0,        # l3_num_neurons
@@ -27,8 +28,8 @@ params_start = [1,        # lanesSide
           1]        # temporal window
 
 params = np.zeros(shape=(num_agents, len(params_start)))
-#copy params_start to each agent params
-params[:] = params_start
+# mutate params_start to each agent params
+params[:] = mutate(params_start, sigma_divisor, 0.95)
 
 for i in range(generations):
     # for each generation
@@ -40,26 +41,25 @@ for i in range(generations):
     agents = np.zeros((num_agents, len(params_start) + 1), dtype=np.float32)  # params, score
     for a in range(num_agents):
         # for each agent a in generation i
-        params[a] = mutate(params[a], sigma_divisor)
+        params[a] = mutate(params[a], sigma_divisor, 1)
         agents[a][0:-1] = params[a]
         agent = Agent(agents[a][0:len(agents[a] - 1)])
         queues.append(Queue())
         processes.append(Process(target=agent.run, args=(queues[a],)))
         processes[a].start()
 
-    #print("launched all threads")
     score_index = len(params_start)
     for a in range(num_agents):
         agents[a][score_index] = queues[a].get()
 
+    # sort agents by score
+    agents = agents[np.argsort(agents[:, score_index])]
     # print scores
     print(agents[:, score_index])
     print(agents[-1:, :])
     print(agent.generate_code(agents[a][0:len(agents[a] - 1)]))
 
-    # sort agents by score
-    agents = agents[np.argsort(agents[:, score_index])]
-    mating_params = create_mating_pool(agents, 2)
+    mating_params = create_mating_pool(agents, 10)
     params = crossover(mating_params, num_agents)
 
 
