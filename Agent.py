@@ -10,7 +10,7 @@ class Agent:
     def run(self, queue):
         #print(self.generate_code(self.params))
         js = shell.muterun_js("javascript/train_webworker.js", arguments=self.generate_arguments())
-        #print(x)
+        #print(js.stdout)
         result = float(js.stdout[-6:])
         #print(result)
         queue.put(result)
