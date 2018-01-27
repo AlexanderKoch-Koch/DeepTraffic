@@ -7,10 +7,10 @@ from GeneticAlgorithm import mutate, create_mating_pool, crossover
 pool = ThreadPool(processes=1)
 
 # evolution parameters
-generations = 20
-num_agents = 40
+generations = 50
+num_agents = 72
 sigma_divisor = 6
-mutate_percent = 1
+mutate_percent = 5
 
 # start parameters for first gen agents
 params_start = [1,        # lanesSide
@@ -29,7 +29,7 @@ params_start = [1,        # lanesSide
 
 params = np.zeros(shape=(num_agents, len(params_start)))
 # mutate params_start to each agent params
-params[:] = mutate(params_start, sigma_divisor, 0.95)
+params[:] = mutate(params_start, sigma_divisor, 95)
 
 for i in range(generations):
     # for each generation
@@ -41,7 +41,7 @@ for i in range(generations):
     agents = np.zeros((num_agents, len(params_start) + 1), dtype=np.float32)  # params, score
     for a in range(num_agents):
         # for each agent a in generation i
-        params[a] = mutate(params[a], sigma_divisor, 1)
+        params[a] = mutate(params[a], sigma_divisor, mutate_percent)
         agents[a][0:-1] = params[a]
         agent = Agent(agents[a][0:len(agents[a] - 1)])
         queues.append(Queue())
