@@ -7,7 +7,7 @@ patchesAhead = Math.round(parseFloat(process.argv[3]));
 //console.log("patchesAhead" + patchesAhead)
 patchesBehind = Math.round(parseFloat(process.argv[4]));
 //console.log("patchesBehind" + patchesBehind)
-trainIterations = 20000;
+trainIterations = 10000;
 //console.log("trainIterations" + trainIterations)
 otherAgents = 0; // max of 9
 
