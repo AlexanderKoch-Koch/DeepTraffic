@@ -11,7 +11,10 @@ class Agent:
         #print(self.generate_code(self.params))
         js = shell.muterun_js("javascript/train_webworker.js", arguments=self.generate_arguments())
         #print(js.stdout)
-        result = float(js.stdout[-6:])
+        try:
+            result = float(js.stdout[-6:])
+        except ValueError:
+            print("Could not extract result from javascript output. Received: " + js.stdout)
         #print(result)
         queue.put(result)
 

@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import math
 
 
 def mutate(params, sigma_divisor, mutate_percent):
@@ -9,6 +10,14 @@ def mutate(params, sigma_divisor, mutate_percent):
             params[param] = random.gauss(mu=params[param], sigma=params[param]/sigma_divisor)
 
     return params
+
+
+def round_float_random(float_value):
+    decimals = float_value % 1
+    if random.randint(1, 99) <= decimals * 100:
+        return math.ceil(float_value)
+    else:
+        return math.floor(float_value)
 
 
 def create_mating_pool(agents, num_parents):
