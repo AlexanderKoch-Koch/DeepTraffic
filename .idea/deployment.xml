@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="cpu-fast">
+    <serverData>
+      <paths name="cpu-1">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/DeepTraffic" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="cpu-fast">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/DeepTraffic" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>

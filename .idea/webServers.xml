@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="d0375357-8442-4bc9-a628-078c2f445e2d" name="cpu-1" url="http://35.198.136.114">
+        <fileTransfer host="35.198.136.114" port="22" privateKey="C:\Users\alexa\.ssh\gcpPrivate.ppk" rootFolder="/home/kogli2000" accessType="SFTP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="2bc0d3d0-394a-493b-84af-0ed1e0585dc8" name="cpu-fast" url="http://35.198.91.203">
+        <fileTransfer host="35.198.91.203" port="22" privateKey="C:\Users\alexa\.ssh\gcpPrivate.ppk" rootFolder="/home/kogli2000" accessType="SFTP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
